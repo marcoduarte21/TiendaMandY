@@ -41,12 +41,12 @@ if(empty($_REQUEST['cl']) || empty($_REQUEST['deuda']))
 
             $credito = mysqli_fetch_assoc($query_credito);
             $id_Deuda = $credito['id'];
-
+            $name_cliente = $credito['nombre'];
 
         //DATOS DEL PAGO
         $query_pago = mysqli_query($conection, "SELECT p.nofactura, DATE_FORMAT(p.fecha, '%d/%m/%Y') as fecha, DATE_FORMAT(p.fecha,'%H:%i:%s') as hora, p.monto_pagado, usu.nombre FROM pagos p
         INNER JOIN usuario usu ON p.idusuario = usu.idusuario
-        WHERE deuda_id = $id_Deuda AND p.monto_pagado != 0.00");
+        WHERE deuda_id = $id_Deuda AND p.monto_pagado != 0.00 order by p.nofactura asc");
 
         $result_pago = mysqli_num_rows($query_pago);
 
@@ -63,7 +63,7 @@ $options->set('isRemoteEnabled', TRUE);
 
 $dompdf = new Dompdf($options);
 
-        $filename = 'facturaDeuda_'.$id_deuda.'.pdf';
+        $filename = 'facturaDeuda_'.$id_deuda.'_'.$name_cliente.'.pdf';
         $dompdf->loadHtml($html);
         // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('letter', 'portrait');
